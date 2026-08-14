@@ -1,0 +1,155 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-nova-amber: var(--nova-amber);
+  --color-nova-cyan: var(--nova-cyan);
+  --color-nova-panel: var(--nova-panel);
+  --color-nova-line: var(--nova-line);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+
+  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+:root {
+  color-scheme: dark;
+
+  /* Cryo-Obsidian palette */
+  --background: #050507;
+  --foreground: #e7e9ef;
+  --card: #0b0b10;
+  --card-foreground: #e7e9ef;
+  --popover: #0c0c12;
+  --popover-foreground: #e7e9ef;
+  --primary: #ff6b00;
+  --primary-foreground: #0a0500;
+  --secondary: #14141b;
+  --secondary-foreground: #e7e9ef;
+  --muted: #101016;
+  --muted-foreground: #7b7d8a;
+  --accent: #16161f;
+  --accent-foreground: #f4f5f8;
+  --destructive: #f0426a;
+  --border: #1c1c25;
+  --input: #17171f;
+  --ring: #ff6b00;
+
+  --nova-amber: #ff6b00;
+  --nova-cyan: #26e0f0;
+  --nova-panel: #0a0a0f;
+  --nova-line: #1a1a22;
+
+  --chart-1: #ff6b00;
+  --chart-2: #26e0f0;
+  --chart-3: #7c5cff;
+  --chart-4: #38d39f;
+  --chart-5: #f0426a;
+
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: 'ss01', 'cv01';
+  }
+}
+
+@layer utilities {
+  .nova-glass {
+    background: color-mix(in oklab, var(--card) 72%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .nova-grid {
+    background-image:
+      linear-gradient(to right, var(--nova-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--nova-line) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  .nova-scroll::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  .nova-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .nova-scroll::-webkit-scrollbar-thumb {
+    background: #23232e;
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  .nova-scroll::-webkit-scrollbar-thumb:hover {
+    background: #33333f;
+    background-clip: content-box;
+  }
+  .text-glow-amber {
+    text-shadow: 0 0 18px color-mix(in oklab, var(--nova-amber) 55%, transparent);
+  }
+}
+
+@keyframes nova-pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--nova-amber) 55%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 12px color-mix(in oklab, var(--nova-amber) 0%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--nova-amber) 0%, transparent);
+  }
+}
+.animate-nova-pulse {
+  animation: nova-pulse-ring 2s infinite;
+}
+
+@keyframes nova-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0.25;
+  }
+}
+.animate-nova-blink {
+  animation: nova-blink 1.1s steps(1) infinite;
+}

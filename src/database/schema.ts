@@ -1,0 +1,44 @@
+// Auto-generated schema mirror of prisma/schema.prisma
+export const schema = `generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(uuid())
+  email String @unique
+  name String?
+  createdAt DateTime @default(now())
+}
+
+model Profile {
+  id String @id @default(uuid())
+  userId String
+  bio String?
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Subscription {
+  id String @id @default(uuid())
+  userId String
+  status String
+  stripeSubscriptionId String?
+  priceId String?
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Workspace {
+  id String @id @default(uuid())
+  ownerId String
+  title String
+}
+
+model Invoice {
+  id String @id @default(uuid())
+  amount Int
+  paid Boolean @default(false)
+}`;

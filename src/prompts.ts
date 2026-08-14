@@ -1,0 +1,22 @@
+export const PROMPTS: string[] = [
+  'A serene landscape at sunrise, photorealistic, wide-angle',
+  'Cyberpunk city street at night, neon lights, rainy',
+  'Portrait of an astronaut in vintage suit, film grain',
+  'Futuristic minimal interior design, soft shadows',
+  'Whimsical fantasy forest with bioluminescent plants',
+  'Ancient library with floating books, warm lighting',
+  'Rustic kitchen with sunlight and steam, cozy',
+  'Epic mountain range with dramatic clouds, HDR',
+  'Macro shot of dew on flower, bokeh background',
+  'A bustling market in Marrakesh, colorful textiles',
+  'Aerial view of winding river through autumn forest',
+  'Abstract geometric shapes in pastel colors',
+  'Concept art: robotic samurai on a bridge',
+  'Noir detective scene in 1940s city, rain',
+  'Underwater coral reef with sunbeams, vibrant fish',
+  'Steampunk airship docking at sunset',
+  'Cute cartoon animal chef baking a cake',
+  'High fashion editorial portrait, dramatic makeup',
+  'Retro 80s synthwave city skyline at dusk',
+  'Minimalist product shot of a smartwatch, studio lighting'
+];
