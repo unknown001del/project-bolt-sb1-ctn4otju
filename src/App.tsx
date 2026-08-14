@@ -17,6 +17,9 @@ import ProjectCards from './components/ProjectCards';
 import Welcome from './components/Welcome';
 
 import { NovaLogo } from '../components/nova/nova-logo';
+import PreviewWrapper from './components/PreviewWrapper';
+import CmdPalette from './components/CmdPalette';
+import WebContainerRunner from './components/WebContainerRunner';
 import WorkspaceTabs from './components/WorkspaceTabs';
 
 const Header: React.FC<{ onDeploy: ()=>void }> = ({ onDeploy }) => {
@@ -60,7 +63,7 @@ const IdeWorkspace: React.FC<{ onSignOut: ()=>void }> = ({ onSignOut }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="col-span-1">
              <AIProductionHub />
              <div className="mt-4">
@@ -89,6 +92,13 @@ const IdeWorkspace: React.FC<{ onSignOut: ()=>void }> = ({ onSignOut }) => {
             <div className="mt-3">
               <CodeEditorConnected />
             </div>
+            <div className="mt-4">
+              {/* WebContainer runner tries to boot an in-browser dev server; falls back to preview wrapper when not available */}
+              <WebContainerRunner files={{}} startCommand={'npm run dev'} />
+              <div className="mt-4">
+                <PreviewWrapper url="http://localhost:5173" />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -110,41 +120,52 @@ const FileSystemMirrorButton: React.FC = ()=> {
 
 const InnerApp: React.FC = () => {
   const { auth, signOut } = useAuth();
+  // page can be 'welcome' | 'templates' | 'showcase' | 'app'
+  const [page, setPage] = useState<'welcome'|'templates'|'showcase'|'app'>(() => auth.signedIn ? 'app' : 'welcome');
   const [stage, setStage] = useState<'planning'|'ide'>('planning');
-  const [pathname, setPathname] = useState(window.location.pathname);
 
   useEffect(()=>{
-    const onPop = () => setPathname(window.location.pathname);
-    window.addEventListener('popstate', onPop);
-    return () => window.removeEventListener('popstate', onPop);
-  },[]);
-
-  useEffect(() => {
-    // if not signed in, ensure welcome route
-    if (!auth.signedIn && window.location.pathname !== '/welcome') {
-      window.history.replaceState({}, '', '/welcome');
-      setPathname('/welcome');
-    }
-    if (auth.signedIn && window.location.pathname === '/welcome') {
-      window.history.replaceState({}, '', '/');
-      setPathname('/');
-    }
-  }, [auth.signedIn]);
-
-  useEffect(()=>{
-    // if user previously approved, go to ide
-  },[]);
+    // ensure route consistency for older links
+    if (!auth.signedIn && page !== 'welcome') setPage('welcome');
+  },[auth.signedIn]);
 
   const onApprove = () => setStage('ide');
+  
+  // If guest continues from welcome
+  const handleGuestContinue = () => setPage('app');
 
-  if (pathname === '/welcome') {
-    return <Welcome />;
+  const [cmdOpen, setCmdOpen] = useState(false);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setCmdOpen(o => !o);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  const handleAction = (id: string) => {
+    setCmdOpen(false);
+    if (id === 'templates') setPage('templates');
+    if (id === 'deploy') alert('Simulated deploy flow');
+    if (id === 'new') alert('Create new project (simulated)');
+    if (id === 'export') alert('Exporting project (simulated)');
+    if (id === 'open-workspace') setPage('app');
+  };
+
+  if (page === 'welcome') {
+    return <>
+      <Welcome onGuest={handleGuestContinue} />
+      <CmdPalette open={cmdOpen} onClose={() => setCmdOpen(false)} onAction={handleAction} />
+    </>;
   }
-
+  
   return (
     <div className="w-full h-full flex flex-col">
       <Header onDeploy={()=>alert('Simulated deploy flow (Parsing → Provisioning → Linking → Success)')} />
-      {stage==='planning' ? (
+      {stage==='planning' && page === 'app' ? (
         <div className="flex-1">
           <BertinPlanner onApprove={onApprove} />
         </div>
@@ -152,6 +173,7 @@ const InnerApp: React.FC = () => {
         <IdeWorkspace onSignOut={signOut} />
       )}
       {!auth.signedIn && <AuthOverlay />}
+      <CmdPalette open={cmdOpen} onClose={() => setCmdOpen(false)} onAction={handleAction} />
     </div>
   );
 };

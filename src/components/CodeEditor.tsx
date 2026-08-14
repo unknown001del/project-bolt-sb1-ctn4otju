@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Editor from '@monaco-editor/react';
+import MonacoLoader from './MonacoLoader';
 import { useFileSystem } from '../context/FileSystemContext';
 
 export interface FileDocument {
@@ -83,10 +83,9 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({ initialPath = 'src/App.t
       </div>
 
       <div className="h-80 border border-zinc-900 rounded overflow-hidden">
-        <Editor
-          height="100%"
-          defaultLanguage={documents.find((doc) => doc.path === path)?.language || 'typescript'}
+        <MonacoLoader
           value={content}
+          language={documents.find((doc) => doc.path === path)?.language || 'typescript'}
           onChange={(v) => setContent(v || '')}
           theme="vs-dark"
           options={{ minimap: { enabled: false }, fontSize: 13 }}

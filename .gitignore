@@ -1,27 +1,22 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Nova Studio .gitignore
 
 # dependencies
-/node_modules
+node_modules
 
-# next.js
-/.next/
-/out/
+# build outputs
+dist
+build
 
-# production
-/build
+# env
+.env
+.env.local
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# env files
-.env*
-
-# vercel
+# vercel / hosting
 .vercel
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# supabase temp
+supabase/.temp
+
+# OS & tools
+.DS_Store
+.vscode

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Editor, { OnMount } from '@monaco-editor/react';
+import MonacoLoader from './MonacoLoader';
 import { useFileSystem } from '../context/FileSystemContext';
 import { useEditor, FileDocument } from '../context/EditorContext';
 
@@ -45,7 +45,7 @@ export const CodeEditorConnected: React.FC<{ initialPath?: string }> = ({ initia
     if (documents.length === 0) setDocuments([{ path: 'src/App.tsx', content: 'export default function App() { return null }' }]);
   }, []);
 
-  const handleEditorMount: OnMount = (editor, monaco) => {
+  const handleEditorMount = (editor: any, monaco: any) => {
     editorRef.current = editor;
     monacoRef.current = monaco;
 
@@ -130,10 +130,9 @@ export const CodeEditorConnected: React.FC<{ initialPath?: string }> = ({ initia
       </div>
 
       <div className="h-80 border border-zinc-900 rounded overflow-hidden">
-        <Editor
-          height="100%"
-          defaultLanguage={detectLanguage(path)}
+        <MonacoLoader
           value={content}
+          language={detectLanguage(path)}
           onChange={(v) => setContent(v || '')}
           onMount={handleEditorMount}
           theme="vs-dark"

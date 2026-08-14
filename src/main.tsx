@@ -10,3 +10,16 @@ createRoot(document.getElementById('root')!).render(
     <App />
   </React.StrictMode>
 );
+
+// Register service worker for PWA installability if available
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      await navigator.serviceWorker.register('/sw.js');
+      console.log('Service worker registered');
+    } catch (err) {
+      console.warn('Service worker registration failed', err);
+    }
+  });
+}
+

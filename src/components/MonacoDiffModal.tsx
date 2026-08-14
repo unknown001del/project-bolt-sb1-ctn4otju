@@ -1,5 +1,4 @@
-import React from 'react';
-import { DiffEditor } from '@monaco-editor/react';
+import React, { useEffect, useState } from 'react';
 import { CheckCircle2, X } from 'lucide-react';
 
 interface MonacoDiffModalProps {
@@ -41,6 +40,19 @@ export const MonacoDiffModal: React.FC<MonacoDiffModalProps> = ({
   onConfirm,
   onCancel,
 }) => {
+  const [DiffEditor, setDiffEditor] = useState<any | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    import('@monaco-editor/react')
+      .then((mod) => {
+        if (!mounted) return;
+        setDiffEditor(() => (mod as any).DiffEditor || mod);
+      })
+      .catch(() => setDiffEditor(null));
+    return () => { mounted = false; };
+  }, []);
+
   if (!open) return null;
 
   const language = detectLanguage(filePath);
@@ -64,22 +76,29 @@ export const MonacoDiffModal: React.FC<MonacoDiffModalProps> = ({
         </div>
 
         <div className="h-[380px] border-b border-zinc-800 bg-[#0d0d12]">
-          <DiffEditor
-            height="100%"
-            language={language}
-            original={originalContent}
-            modified={newContent}
-            theme="vs-dark"
-            options={{
-              readOnly: true,
-              renderSideBySide: true,
-              minimap: { enabled: false },
-              scrollBeyondLastLine: false,
-              smoothScrolling: true,
-              fontSize: 12,
-              lineNumbersMinChars: 3,
-            }}
-          />
+          {DiffEditor ? (
+            <DiffEditor
+              height="100%"
+              language={language}
+              original={originalContent}
+              modified={newContent}
+              theme="vs-dark"
+              options={{
+                readOnly: true,
+                renderSideBySide: true,
+                minimap: { enabled: false },
+                scrollBeyondLastLine: false,
+                smoothScrolling: true,
+                fontSize: 12,
+                lineNumbersMinChars: 3,
+              }}
+            />
+          ) : (
+            <div className="h-full grid grid-cols-2">
+              <textarea readOnly value={originalContent} className="w-full h-full p-3 bg-[#0b0b0d] text-xs text-zinc-300 font-mono border-r border-zinc-800" />
+              <textarea readOnly value={newContent} className="w-full h-full p-3 bg-[#0b0b0d] text-xs text-zinc-300 font-mono" />
+            </div>
+          )}
         </div>
 
         <div className="flex items-center justify-between px-4 py-3">
