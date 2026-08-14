@@ -38,7 +38,7 @@ const Header: React.FC<{ onDeploy: ()=>void }> = ({ onDeploy }) => {
   );
 };
 
-const IdeWorkspace: React.FC<{ onSignOut: ()=>void }> = ({ onSignOut }) => {
+const IdeWorkspace: React.FC<{ onSignOut: ()=>void; webContainerUrl?: string | null; setWebContainerUrl?: (u: string | null) => void }> = ({ onSignOut, webContainerUrl, setWebContainerUrl }) => {
   const [active, setActive] = useState('explorer');
 
   return (
@@ -94,9 +94,9 @@ const IdeWorkspace: React.FC<{ onSignOut: ()=>void }> = ({ onSignOut }) => {
             </div>
             <div className="mt-4">
               {/* WebContainer runner tries to boot an in-browser dev server; falls back to preview wrapper when not available */}
-              <WebContainerRunner files={{}} startCommand={'npm run dev'} />
+              <WebContainerRunner files={{}} startCommand={'npm run dev'} onUrl={setWebContainerUrl} />
               <div className="mt-4">
-                <PreviewWrapper url="http://localhost:5173" />
+                <PreviewWrapper url={webContainerUrl ?? 'http://localhost:5173'} />
               </div>
             </div>
           </div>
@@ -123,6 +123,7 @@ const InnerApp: React.FC = () => {
   // page can be 'welcome' | 'templates' | 'showcase' | 'app'
   const [page, setPage] = useState<'welcome'|'templates'|'showcase'|'app'>(() => auth.signedIn ? 'app' : 'welcome');
   const [stage, setStage] = useState<'planning'|'ide'>('planning');
+  const [webContainerUrl, setWebContainerUrl] = useState<string | null>(null);
 
   useEffect(()=>{
     // ensure route consistency for older links
